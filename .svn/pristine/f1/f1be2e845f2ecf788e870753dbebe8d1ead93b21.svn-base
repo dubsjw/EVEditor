@@ -1,8 +1,0 @@
-pyinstaller --uac-admin ^
---onefile ^
---name EVEditor ^
---manifest EVEditor.exe.manifest ^
---icon=resources/icons/icon.ico ^
-EVEditor/EVEditor.py
-
-pyqtdeploy dist/EVEditor.exe

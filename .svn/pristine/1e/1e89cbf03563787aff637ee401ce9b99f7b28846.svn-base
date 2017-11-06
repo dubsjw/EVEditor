@@ -1,2 +1,0 @@
-pyuic5 resources/forms/EVEditor.ui -o EVEditor/ui_eveditor.py
-pyrcc5 resources/resources.qrc -o EVEditor/resources.py
