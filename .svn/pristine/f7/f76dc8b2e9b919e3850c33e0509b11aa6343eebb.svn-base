@@ -1,0 +1,1 @@
+pyuic5 resources/forms/EvEditor.ui -o EVEditor/Ui_EvEditor.py
