@@ -5,59 +5,25 @@ __author__ = "Jacob Dubs"
 __credits__ = ["Jacob Dubs", "Sridhar Ratnakumar"]
 __version__ = "1.0.0"
 
+# Python imports
+import sys
+import os
+import tempfile
+import platform
+
 # EVEditor imports
 from ui_eveditor import Ui_EVEditor
 from ui_valueeditor import Ui_ValueEditor
 import resources
 
+if platform.system() == 'Windows':
+	import windowsev
+
 # PyQt5 imports
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QDialog, QMessageBox, QAbstractItemView
 from PyQt5 import QtGui, QtCore
-
-# Python imports
-import sys
-import os
-import tempfile
-
-# Win32 imports
-from subprocess import check_call
-if sys.hexversion > 0x03000000:
-    import winreg
-else:
-    import _winreg as winreg
-
-class Win32Environment:
-    """Utility class to get/set windows environment variable"""
     
-    def __init__(self, scope):
-        assert scope in ('user', 'system')
-        self.scope = scope
-        if scope == 'user':
-            self.root = winreg.HKEY_CURRENT_USER
-            self.subkey = 'Environment'
-        else:
-            self.root = winreg.HKEY_LOCAL_MACHINE
-            self.subkey = r'SYSTEM\CurrentControlSet\Control\Session Manager\Environment'
-            
-    def getenv(self, name):
-        key = winreg.OpenKey(self.root, self.subkey, 0, winreg.KEY_READ)
-        try:
-            value, _ = winreg.QueryValueEx(key, name)
-        except WindowsError:
-            value = ''
-        return value
-    
-    def setenv(self, name, value):
-        # Note: for 'system' scope, you must run this as Administrator
-        key = winreg.OpenKey(self.root, self.subkey, 0, winreg.KEY_ALL_ACCESS)
-        winreg.SetValueEx(key, name, 0, winreg.REG_EXPAND_SZ, value)
-        winreg.CloseKey(key)
-        # For some strange reason, calling SendMessage from the current process
-        # doesn't propagate environment changes at all.
-        # TODO: handle CalledProcessError (for assert)
-        check_call('''"%s" -c "import win32api, win32con; \
-			assert win32api.SendMessage(win32con.HWND_BROADCAST, win32con.WM_SETTINGCHANGE, 0, 'Environment')"''' % sys.executable)
-    
+
 class EVEditor( QMainWindow ):
     def __init__( self ):
         super( EVEditor, self ).__init__()
@@ -218,6 +184,7 @@ class EVEditor( QMainWindow ):
         # Set up some variables.
         rowcount = self.ui.evTableWidget.rowCount()
         evdict = {}
+        winEnv = windowsev.Win32Environment('system')
         
         # Grab all of the values from the tablewidget and save them.
         for i in range( 0, rowcount ):
@@ -228,7 +195,12 @@ class EVEditor( QMainWindow ):
 
 
         for key in evdict:
-            pass
+            savedValue = winEnv.getenv(key)
+
+            if evdict[key] == savedValue:
+                print('True\n')
+            else:
+                print('False\n\tEVEditor: KEY - ' + key + ' ... VALUE - ' + evdict[key] + '\n\tWin32: ' + savedValue)
         
     # When the exit button is clicked.
     def onExitButtonClicked( self ):
