@@ -1,1 +1,9 @@
-pyqt5 == 5.9.1
+altgraph==0.15
+future==0.16.0
+macholib==1.9
+pefile==2017.11.5
+PyInstaller==3.3.1
+pypiwin32==223
+PyQt5==5.10.1
+pywin32==223
+sip==4.19.8

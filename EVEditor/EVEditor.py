@@ -14,6 +14,7 @@ import platform
 # EVEditor imports
 from ui_eveditor import Ui_EVEditor
 from ui_valueeditor import Ui_ValueEditor
+import dictdiffer
 import resources
 
 if platform.system() == 'Windows':
@@ -31,6 +32,10 @@ class EVEditor( QMainWindow ):
         # Setup the ui.
         self.ui = Ui_EVEditor()
         self.ui.setupUi( self )
+        
+        # Create some dictionaries to get diffs of old and new values.
+        oldenvs = {}
+        newenvs = {}
         
         # Connect some signals.
         self.ui.exitButton.clicked.connect( self.onExitButtonClicked )

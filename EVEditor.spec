@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['EVEditor\\EVEditor.py'],
-             pathex=['C:\\Python35\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'EVEditor', 'C:\\Users\\jacob.dubs\\Desktop\\Development\\EVEditor'],
+             pathex=['eveditor_env\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'EVEditor', 'C:\\Users\\jacob.dubs\\Desktop\\Development\\Misc\\EVEditor'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -25,4 +25,5 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
+          runtime_tmpdir=None,
           console=False , uac_admin=True, icon='resources\\icons\\icon.ico', manifest='EVEditor.exe.manifest')
