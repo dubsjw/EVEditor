@@ -14,7 +14,7 @@ import platform
 # EVEditor imports
 from ui_eveditor import Ui_EVEditor
 from ui_valueeditor import Ui_ValueEditor
-import dictdiffer
+from dictdiffer import DictDiffer 
 import resources
 
 if platform.system() == 'Windows':
@@ -34,8 +34,8 @@ class EVEditor( QMainWindow ):
         self.ui.setupUi( self )
         
         # Create some dictionaries to get diffs of old and new values.
-        oldenvs = {}
-        newenvs = {}
+        self.oldenvs = {}
+        self.newenvs = {}
         
         # Connect some signals.
         self.ui.exitButton.clicked.connect( self.onExitButtonClicked )
@@ -64,6 +64,8 @@ class EVEditor( QMainWindow ):
         
         # Add environment variables to it.
         for key in variables:
+            self.oldenvs[key] = variables[key]
+            
             keytableitem = QTableWidgetItem()
             keytableitem.setData( QtCore.Qt.DisplayRole, key )
             
@@ -199,14 +201,13 @@ class EVEditor( QMainWindow ):
             evdict[evKey] = evValue
 
 
-        for key in evdict:
-            savedValue = winEnv.getenv(key)
+        self.newenvs = evdict
+        differ = DictDiffer(self.newenvs, self.oldenvs)
+        changed = differ.changed()
 
-            if evdict[key] == savedValue:
-                print('True\n')
-            else:
-                print('False\n\tEVEditor: KEY - ' + key + ' ... VALUE - ' + evdict[key] + '\n\tWin32: ' + savedValue)
-        
+        for k in changed:
+            print('Key: ' + k + '  ->  Value: ' + self.newenvs[k])
+
     # When the exit button is clicked.
     def onExitButtonClicked( self ):
         sys.exit(0)
